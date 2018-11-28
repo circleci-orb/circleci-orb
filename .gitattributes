@@ -1,0 +1,5 @@
+# circleci-orb project gitattributes file
+# https://github.com/github/linguist#using-gitattributes
+
+doc linguist-documentation
+.yamllint linguist-language=YAML
