@@ -1,0 +1,14 @@
+---
+extends: relaxed
+
+rules:
+  document-start: disable
+  indentation:
+    spaces: consistent
+    indent-sequences: true
+    check-multi-line-strings: false
+  line-length:
+    max: 200
+    allow-non-breakable-words: true
+    allow-non-breakable-inline-mappings: false
+  trailing-spaces: enable
