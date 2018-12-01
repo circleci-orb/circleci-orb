@@ -1,0 +1,7 @@
+executor: macos
+steps:
+  - checkout
+  - run:
+      name: install latest go via homebrew
+      command: |
+        brew install https://github.com/Homebrew/homebrew-core/raw/master/Formula/go.rb || brew upgrade https://github.com/Homebrew/homebrew-core/raw/master/Formula/go.rb || true
