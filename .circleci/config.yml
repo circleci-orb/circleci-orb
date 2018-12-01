@@ -8,7 +8,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-          version: 18.09.0
+          version: 18.06.0-ce
       - run:
           name: Validate orb yaml files
           command: |
