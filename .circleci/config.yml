@@ -12,7 +12,8 @@ jobs:
       - run:
           name: Validate orb yaml files
           command: |
-            ORB_FILES=$(circleci tests glob "src/**/*.yml" | circleci tests split)
+            make pack/golang
+            ORB_FILES=$(circleci tests glob "src/*.yml" | circleci tests split)
             for f in $ORB_FILES;
             do
               echo "Validating $f ..."
