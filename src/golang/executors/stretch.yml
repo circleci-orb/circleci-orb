@@ -2,6 +2,6 @@ parameters:
   tag:
     description: "The tag to use on the golang:stretch image"
     type: string
-    default: "1.11.2-stretch"
+    default: "1.11-stretch"
 docker:
   - image: "golang:<< parameters.tag >>"
