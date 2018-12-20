@@ -1,21 +1,43 @@
 NAMESPACE = cci-orb
-VERSION ?=
+VERSION ?= $(shell cat ./src/$*/VERSION.txt)
 GIT_COMMIT := $(shell git rev-parse --short HEAD)
+
+CIRCLECI_FLAGS ?= --skip-update-check
+
+ifneq ($(V),)
+	CIRCLECI_FLAGS+=--debug
+endif
 
 .PHONY: pack/%
 pack/%:  ## packing % to src/%.yml.
 	@${RM} src/$*.yml
-	circleci config pack src/$*/ > src/$*.yml
+	@circleci config pack $(strip $(CIRCLECI_FLAGS))  src/$*/ > src/$*.yml
 
 .PHONY: validate/%
 validate/%:  ## validate ./src/%.yml.
-	circleci orb validate ./src/$*.yml
+	@circleci orb validate $(strip $(CIRCLECI_FLAGS)) ./src/$*.yml
+
+.PHONY: check/%
+check/%: pack/% validate/%  ## checks orb with pack and validation.
+	@${MAKE} --silent clean/$*
+
+.PHONY: create/%
+create/%:  ## creates orb registry to org namespace.
+	@circleci orb create $(strip $(CIRCLECI_FLAGS)) ${NAMESPACE}/$* || true
+
+.PHONY: clean/%
+clean/%:  ## clean packed orb yaml.
+	@${RM} ./src/$*.yml
 
 .PHONY: publish/dev/%
-publish/dev/%: VERSION=$(shell cat ./src/$*/VERSION.txt)
-publish/dev/%: pack/% validate/%  ## publish %.yml dev version orb.
-	circleci orb create ${NAMESPACE}/$* || true
-	circleci orb publish ./src/$*.yml ${NAMESPACE}/$*@dev:$(VERSION)-${GIT_COMMIT} --debug
+publish/dev/%: TAG=dev:$(shell cat ./src/$*/VERSION.txt)-${GIT_COMMIT}
+publish/dev/%: pack/% validate/% create/%  ## publish %.yml to dev orb registry.
+	circleci orb publish $(strip $(CIRCLECI_FLAGS)) ./src/$*.yml ${NAMESPACE}/$*@${TAG}
+
+.PHONY: publish/%
+publish/%: TAG=$(shell cat ./src/$*/VERSION.txt)
+publish/%: pack/% validate/% create/%  ## publish %.yml to production orb registry.
+	circleci orb publish $(strip $(CIRCLECI_FLAGS)) ./src/$*.yml ${NAMESPACE}/$*@${TAG}
 
 .PHONY: help
 help:  ## Show make target help.
