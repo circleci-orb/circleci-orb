@@ -1,0 +1,18 @@
+steps:
+  - restore_cache:
+      keys:
+        - << parameters.key >>-{{ checksum "go.sum" }}
+  - run:
+      name: Download go module dependencies
+      command: |
+        go mod download
+  - save_cache:
+      key: << parameters.key >>-{{ checksum "go.sum" }}
+      paths: "/go/pkg/mod"
+description: |
+  go mod commands helper
+parameters:
+  key:
+    description: "The key of restore_cache and save_cache."
+    type: string
+    default: "gomod"
