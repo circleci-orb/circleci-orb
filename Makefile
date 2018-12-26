@@ -14,7 +14,7 @@ pack/%:  ## packing % to src/%.yml.
 	@circleci config pack $(strip $(CIRCLECI_FLAGS))  src/$*/ > src/$*.yml
 
 .PHONY: validate/%
-validate/%:  ## validate ./src/%.yml.
+validate/%: pack/%  ## validate ./src/%.yml.
 	@circleci orb validate $(strip $(CIRCLECI_FLAGS)) ./src/$*.yml
 
 .PHONY: check/%
