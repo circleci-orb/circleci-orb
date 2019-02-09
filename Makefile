@@ -1,9 +1,8 @@
+.DEFAULT_GOAL = help
 NAMESPACE = cci-orb
 VERSION ?= $(shell cat ./src/$*/VERSION.txt)
-GIT_COMMIT := $(shell git rev-parse --short HEAD)
 
 CIRCLECI_FLAGS ?= --skip-update-check
-
 ifneq ($(V),)
 	CIRCLECI_FLAGS+=--debug
 endif
@@ -30,7 +29,7 @@ clean/%:  ## clean packed orb yaml.
 	@${RM} ./src/$*.yml
 
 .PHONY: publish/dev/%
-publish/dev/%: TAG=dev:$(shell cat ./src/$*/VERSION.txt)-${GIT_COMMIT}
+publish/dev/%: TAG=dev:$(shell cat ./src/$*/VERSION.txt)
 publish/dev/%: pack/% validate/% create/%  ## publish %.yml to dev orb registry.
 	circleci orb publish $(strip $(CIRCLECI_FLAGS)) ./src/$*.yml ${NAMESPACE}/$*@${TAG}
 
