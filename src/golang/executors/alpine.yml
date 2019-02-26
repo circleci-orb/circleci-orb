@@ -2,6 +2,6 @@ parameters:
   tag:
     description: "The tag to use on the golang:alpine image"
     type: string
-    default: "1.12-alpine3.9"
+    default: "1.12-rc-alpine3.9"
 docker:
   - image: "golang:<< parameters.tag >>"
