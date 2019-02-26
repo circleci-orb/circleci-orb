@@ -28,6 +28,9 @@ create/%:  ## creates orb registry to org namespace.
 clean/%:  ## clean packed orb yaml.
 	@${RM} ./src/$*.yml
 
+.PHONY: clean
+clean: clean/golang
+
 .PHONY: publish/dev/%
 publish/dev/%: TAG=dev:$(shell cat ./src/$*/VERSION.txt)
 publish/dev/%: pack/% validate/% create/%  ## publish %.yml to dev orb registry.
