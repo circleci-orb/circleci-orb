@@ -8,5 +8,5 @@ macos:
 environment:
   PATH: /Users/distiller/go/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
   GOPATH: /Users/distiller/go
-  HOMEBREW_NO_AUTO_UPDATE: true
-shell: /bin/bash --login -eux -o pipefail
+  HOMEBREW_NO_AUTO_UPDATE: "true"
+shell: /bin/bash --login -eu -o pipefail

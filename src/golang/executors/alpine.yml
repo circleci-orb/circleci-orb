@@ -5,3 +5,4 @@ parameters:
     default: "1.12-alpine3.9"
 docker:
   - image: "golang:<< parameters.tag >>"
+shell: /bin/bash -eu -o pipefail
