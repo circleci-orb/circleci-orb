@@ -1,0 +1,13 @@
+description: |
+  Install latest go via Homebrew.
+parameters:
+  formula:
+    description: "The Homebrew go Formula url."
+    type: string
+    default: "https://github.com/Homebrew/homebrew-core/raw/master/Formula/go.rb"
+steps:
+  - run:
+      name: Install latest go via homebrew
+      command: |
+        brew upgrade << parameters.formula >> || brew install << parameters.formula >> || true
+        go version

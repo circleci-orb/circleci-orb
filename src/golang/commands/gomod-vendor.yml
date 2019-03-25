@@ -1,0 +1,9 @@
+description: |
+  Run `go mod vendor`.
+steps:
+  - run:
+      name: Run go mod vendor
+      environment:
+        GO111MODULE: "on"
+      command: |
+        go mod vendor -v
