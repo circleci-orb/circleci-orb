@@ -1,4 +1,4 @@
 version: 2.1
 
 description: |
-  library/golang container images executors
+  library/golang container images executors and utility commands
