@@ -1,0 +1,13 @@
+description: "Setup Github Token for fetching codes private repository"
+
+parameters:
+  token:
+    description: Token environment variable name
+    type: string
+    default: "GITHUB_TOKEN"
+steps:
+  - run:
+      name: Setup Github Token for fetching codes private repository
+      command: |
+        echo "machine github.com login ${<< parameters.token >>}" > ~/.netrc
+        if [ -f ~/.gitconfig ]; then rm ~/.gitconfig; fi
