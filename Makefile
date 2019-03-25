@@ -7,22 +7,26 @@ ifneq ($(V),)
 	CIRCLECI_FLAGS+=--debug
 endif
 
+.PHONY: create/%
+create/%:  ## creates orb registry to org namespace.
+	@circleci orb create $(strip $(CIRCLECI_FLAGS)) --no-prompt ${NAMESPACE}/$* > /dev/null 2>&1 || true
+
 .PHONY: pack/%
 pack/%:  ## packing % to src/%.yml.
 	@${RM} src/$*.yml
-	@circleci config pack $(strip $(CIRCLECI_FLAGS))  src/$*/ > src/$*.yml
+	@circleci config pack $(strip $(CIRCLECI_FLAGS)) src/$*/ > src/$*.yml
 
 .PHONY: validate/%
 validate/%: pack/%  ## validate ./src/%.yml.
 	@circleci orb validate $(strip $(CIRCLECI_FLAGS)) ./src/$*.yml
 
-.PHONY: check/%
-check/%: pack/% validate/%  ## checks orb with pack and validation.
-	@${MAKE} --silent clean/$*
+.PHONY: process/%
+process/%: validate/%
+	@circleci orb process ./src/$*.yml | bat -l yaml -
 
-.PHONY: create/%
-create/%:  ## creates orb registry to org namespace.
-	@circleci orb create $(strip $(CIRCLECI_FLAGS)) ${NAMESPACE}/$* || true
+.PHONY: check/%
+check/%:  ## checks orb with pack and validation.
+	@${MAKE} --silent validate/$* clean/$*
 
 .PHONY: clean/%
 clean/%:  ## clean packed orb yaml.
@@ -33,12 +37,12 @@ clean: clean/golang
 
 .PHONY: publish/dev/%
 publish/dev/%: TAG=dev:$(shell cat ./src/$*/VERSION.txt)
-publish/dev/%: pack/% validate/% create/%  ## publish %.yml to dev orb registry.
+publish/dev/%: validate/% create/%  ## publish %.yml to dev orb registry.
 	circleci orb publish $(strip $(CIRCLECI_FLAGS)) ./src/$*.yml ${NAMESPACE}/$*@${TAG}
 
 .PHONY: publish/%
 publish/%: TAG=$(shell cat ./src/$*/VERSION.txt)
-publish/%: pack/% validate/% create/%  ## publish %.yml to production orb registry.
+publish/%: validate/% create/%  ## publish %.yml to production orb registry.
 	circleci orb publish $(strip $(CIRCLECI_FLAGS)) ./src/$*.yml ${NAMESPACE}/$*@${TAG}
 
 .PHONY: help
